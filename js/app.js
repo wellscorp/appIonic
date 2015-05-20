@@ -18,6 +18,30 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     }
+
+
+      var db= window.openDatabase("banco", "1.0", "banco de dados", 200000);
+      //database= createOpen("teste", "1.0", "testando selecao", 200000);
+      db.transaction(PopulateDatabase, errorDB, successDB);
+
+
+
+      function PopulateDatabase(tx){
+
+          tx.executeSql("Create TABLE IF NOT EXISTS nota (ROLLNO INT PRIMARY KEY , titulo text, descricao text, dt_criacao numeric, hr_criacao numeric)");
+          //tx.executeSql("INSERT INTO nota (titulo, descricao) VALUES ('primeiro', 'primeira nota')");
+
+          //tx.executeSql("Insert into chamado values(1,'titulo 01', 'descricao 01')");
+
+      }
+
+      function errorDB(error){
+          alert("Erro ao criar banco: " + error);
+      }
+
+      function successDB(){
+          //alert("Informações inseridas com sucesso!");
+      }
   });
 })
 
@@ -68,14 +92,61 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
 
   .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+      url: '/account',
+      views: {
+          'tab-account': {
+              templateUrl: 'templates/tab-account.html',
+              controller: 'AccountCtrl'
+          }
       }
-    }
-  });
+  })
+
+      .state('tab.teste', {
+          url: '/teste',
+          views: {
+              'tab-teste': {
+                  templateUrl: 'templates/tab-teste.html',
+                  controller: 'TesteCtrl'
+              }
+          }
+      })
+
+      .state('tab.nota', {
+          url: '/nota',
+          views: {
+              'tab-nota': {
+                  templateUrl: 'templates/tab-nota.html',
+                  controller: 'NotaCtrl'
+              }
+          }
+      })
+      .state('tab.nova-nota', {
+          url: '/nota/inserir',
+          views: {
+              'tab-nota': {
+                  templateUrl: 'templates/nova-nota.html',
+                  controller: 'InserirCtrl'
+              }
+          }
+      })
+      .state('tab.teste-detail', {
+          url: '/teste/:testeId',
+          views: {
+              'tab-teste': {
+                  templateUrl: 'templates/teste-detail.html',
+                  controller: 'TesteDetailCtrl'
+              }
+          }
+      })
+        .state('tab.nota-detail', {
+            url: '/nota/:notaId',
+            views: {
+                'tab-nota': {
+                    templateUrl: 'templates/nota-detail.html',
+                    controller: 'NotaDetailCtrl'
+                }
+            }
+        });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/dash');
