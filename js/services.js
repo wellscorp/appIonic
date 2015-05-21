@@ -119,6 +119,7 @@ angular.module('starter.services', [])
             }
             //$scope.notas= notas;
         }
+
         function resultError(error){
             alert("error ocorreu2: "+error);
         }
@@ -152,6 +153,14 @@ angular.module('starter.services', [])
                     }
                 }
                 return null;
+            },
+            set: function(novo) {
+                notas.splice(notas.length, 0, novo[0]);
+                console.log(novo[0]);
+                console.log(notas);
+            },
+            change: function(item, novo) {
+                notas.splice(notas.indexOf(item), 1, novo[0]);
             }
         };
     })

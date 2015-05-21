@@ -31,7 +31,7 @@ angular.module('starter.controllers', [])
 
 .controller('NotaDetailCtrl', function($scope, $stateParams, Notas) {
     $scope.nota = Notas.get($stateParams.notaId);
-    console.log($scope);
+    console.log($scope.nota);
 
         $scope.editar = function(id){
 
@@ -44,6 +44,18 @@ angular.module('starter.controllers', [])
             }, errorNota, successNota);
         };
 
+        $scope.doRefresh = function() {
+            $http.get('/tab/nota')
+
+                .success(function(newItems) {
+                    $scope.nota = newItems;
+                    $window.location.reload(true);
+                })
+                .finally(function() {
+                    // Stop the ion-refresher from spinning
+                    $scope.$broadcast('scroll.refreshComplete');
+                });
+        };
 
         function editarNota(tx, titulo, descricao, id){
 
@@ -54,8 +66,12 @@ angular.module('starter.controllers', [])
             query= "UPDATE nota SET titulo = '"+titulo+"' , descricao = '"+descricao+"' WHERE titulo =  '"+id+"'; ";
             //alert(query);
             tx.executeSql(query);
-            //$ionicGoBack();
-            //$window.open('#', '_blank');
+            var nota= [{
+                id: 0,
+                titulo: titulo,
+                descricao: descricao
+            }];
+            Notas.change($scope.nota, nota);
         }
 
         function errorNota(error){
@@ -63,9 +79,11 @@ angular.module('starter.controllers', [])
         }
 
         function successNota(){
+            window.open("index.html#/tab/nota", "_self");
             //window.history.back();
             //window.location.replace("index.html#/tab/nota");
-            window.open("index.html#/tab/nota", "_self");
+            //window.location.reload();
+            //window.open("index.html#/tab/nota", "_self");
             //alert("Chamado inserido com sucesso!");
             //window.open("nota.html");
         }
@@ -136,7 +154,7 @@ angular.module('starter.controllers', [])
         //getNota();
 })
 
-.controller('InserirCtrl', function($scope) {
+.controller('InserirCtrl', function($scope, Notas) {
 
     $scope.salvar = function(){
 
@@ -159,6 +177,13 @@ angular.module('starter.controllers', [])
         query= "INSERT INTO nota ( titulo, descricao, dt_criacao, hr_criacao) VALUES ('"+titulo+"', '"+descricao+"', "+ data +", "+ hora +")";
         //alert(query);
         tx.executeSql(query);
+        var nota= [{
+            id: 0,
+            titulo: titulo,
+            descricao: descricao
+        }];
+        Notas.set(nota);
+        //console.log(nota);
 
     }
 
